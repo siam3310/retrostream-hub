@@ -14,7 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      live_matches: {
+        Row: {
+          created_at: string
+          id: number
+          start_time: string | null
+          status: Database["public"]["Enums"]["match_status"] | null
+          stream_links: Json | null
+          team1_logo: string | null
+          team1_name: string
+          team2_logo: string | null
+          team2_name: string
+          tournament: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["match_status"] | null
+          stream_links?: Json | null
+          team1_logo?: string | null
+          team1_name: string
+          team2_logo?: string | null
+          team2_name: string
+          tournament?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["match_status"] | null
+          stream_links?: Json | null
+          team1_logo?: string | null
+          team1_name?: string
+          team2_logo?: string | null
+          team2_name?: string
+          tournament?: string | null
+        }
+        Relationships: []
+      }
+      moviesandseries: {
+        Row: {
+          backdropUrl: string | null
+          category: string | null
+          dateAdded: string
+          description: string | null
+          downloadLinks: Json | null
+          featured: boolean | null
+          genre: string[] | null
+          id: string
+          posterUrl: string | null
+          rating: string | null
+          slug: string
+          title: string | null
+          type: string | null
+          videoSources: Json | null
+          year: number | null
+        }
+        Insert: {
+          backdropUrl?: string | null
+          category?: string | null
+          dateAdded?: string
+          description?: string | null
+          downloadLinks?: Json | null
+          featured?: boolean | null
+          genre?: string[] | null
+          id: string
+          posterUrl?: string | null
+          rating?: string | null
+          slug: string
+          title?: string | null
+          type?: string | null
+          videoSources?: Json | null
+          year?: number | null
+        }
+        Update: {
+          backdropUrl?: string | null
+          category?: string | null
+          dateAdded?: string
+          description?: string | null
+          downloadLinks?: Json | null
+          featured?: boolean | null
+          genre?: string[] | null
+          id?: string
+          posterUrl?: string | null
+          rating?: string | null
+          slug?: string
+          title?: string | null
+          type?: string | null
+          videoSources?: Json | null
+          year?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +115,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      match_status: "live" | "upcoming" | "finished"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +242,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      match_status: ["live", "upcoming", "finished"],
+    },
   },
 } as const

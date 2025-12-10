@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Edit, Trash2, Star, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { MovieOrSeries } from '@/lib/types';
-import { useAdmin } from '@/contexts/AdminContext';
+import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 
 const AdminMedia = () => {
-  const { isAuthenticated } = useAdmin();
   const [media, setMedia] = useState<MovieOrSeries[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,35 +33,52 @@ const AdminMedia = () => {
     fetchMedia();
   };
 
-  if (!isAuthenticated) return <Navigate to="/admin/login" />;
-
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="mx-auto max-w-4xl">
-        <Link to="/admin" className="mb-4 inline-flex items-center gap-2 hover:underline">
-          <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+    <AdminLayout title="Manage Media" description="Edit, delete, or toggle featured status.">
+      <div className="mb-4 flex justify-end">
+        <Link to="/admin/add">
+          <Button className="border-2 border-foreground">
+            <Plus className="mr-2 h-4 w-4" /> Add Content
+          </Button>
         </Link>
-        <h1 className="mb-6 border-b-2 border-foreground pb-2 text-2xl font-bold">Manage Media</h1>
-        {loading ? <p>Loading...</p> : (
-          <div className="space-y-2">
-            {media.map((item) => (
-              <div key={item.id} className="flex items-center justify-between border-2 border-foreground p-3">
-                <div>
-                  <span className="font-bold">{item.title}</span>
-                  <span className="ml-2 text-muted-foreground">{item.type} • {item.year}</span>
-                  {item.featured && <Star className="ml-2 inline h-4 w-4 text-yellow-500" />}
-                </div>
-                <div className="flex gap-2">
-                  <Button size="icon" variant="outline" onClick={() => toggleFeatured(item)}><Star className="h-4 w-4" /></Button>
-                  <Link to={`/admin/edit/${item.slug}`}><Button size="icon" variant="outline"><Edit className="h-4 w-4" /></Button></Link>
-                  <Button size="icon" variant="destructive" onClick={() => deleteItem(item.id)}><Trash2 className="h-4 w-4" /></Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-    </div>
+      
+      {loading ? (
+        <p>Loading...</p>
+      ) : media.length === 0 ? (
+        <p className="text-muted-foreground">No content found. Add some!</p>
+      ) : (
+        <div className="border-2 border-foreground">
+          <div className="grid grid-cols-[1fr_100px_80px_120px] gap-4 border-b-2 border-foreground bg-muted p-3 font-bold">
+            <span>Title</span>
+            <span>Type</span>
+            <span>Year</span>
+            <span className="text-right">Actions</span>
+          </div>
+          {media.map((item) => (
+            <div key={item.id} className="grid grid-cols-[1fr_100px_80px_120px] gap-4 border-b border-border p-3 items-center">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">{item.title}</span>
+                {item.featured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
+              </div>
+              <span className="text-muted-foreground">{item.type}</span>
+              <span className="text-muted-foreground">{item.year}</span>
+              <div className="flex justify-end gap-1">
+                <Button size="icon" variant="ghost" onClick={() => toggleFeatured(item)} title="Toggle Featured">
+                  <Star className={`h-4 w-4 ${item.featured ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                </Button>
+                <Link to={`/admin/edit/${item.slug}`}>
+                  <Button size="icon" variant="ghost" title="Edit"><Edit className="h-4 w-4" /></Button>
+                </Link>
+                <Button size="icon" variant="ghost" onClick={() => deleteItem(item.id)} title="Delete">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </AdminLayout>
   );
 };
 

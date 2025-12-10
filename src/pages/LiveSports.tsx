@@ -27,14 +27,11 @@ const LiveSports = () => {
     fetchMatches();
   }, []);
 
-  const liveMatches = matches.filter((m) => m.status === 'live');
-  const upcomingMatches = matches.filter((m) => m.status === 'upcoming');
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-6">
-        <h1 className="mb-6 border-b-2 border-foreground pb-2 text-2xl font-bold">
+        <h1 className="mb-6 border-b-2 border-foreground pb-2 text-center text-2xl font-bold">
           Live Sports
         </h1>
 
@@ -57,49 +54,27 @@ const LiveSports = () => {
           </div>
         )}
 
+        <h2 className="mb-4 text-xl font-bold">Matches</h2>
+
         {loading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="h-24 animate-pulse border-2 border-foreground bg-muted" />
             ))}
           </div>
+        ) : matches.length === 0 ? (
+          <div className="border-2 border-foreground p-8 text-center">
+            <p className="text-muted-foreground">No matches available</p>
+          </div>
         ) : (
-          <div className="space-y-8">
-            {liveMatches.length > 0 && (
-              <section>
-                <h2 className="mb-4 text-xl font-bold">🔴 Live Now</h2>
-                <div className="space-y-4">
-                  {liveMatches.map((match) => (
-                    <MatchCard
-                      key={match.id}
-                      match={match}
-                      onSelectStream={setActiveStreamUrl}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {upcomingMatches.length > 0 && (
-              <section>
-                <h2 className="mb-4 text-xl font-bold">📅 Upcoming</h2>
-                <div className="space-y-4">
-                  {upcomingMatches.map((match) => (
-                    <MatchCard
-                      key={match.id}
-                      match={match}
-                      onSelectStream={setActiveStreamUrl}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {liveMatches.length === 0 && upcomingMatches.length === 0 && (
-              <div className="border-2 border-foreground p-8 text-center">
-                <p className="text-muted-foreground">No live or upcoming matches</p>
-              </div>
-            )}
+          <div className="space-y-6">
+            {matches.map((match) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+                onSelectStream={setActiveStreamUrl}
+              />
+            ))}
           </div>
         )}
       </main>

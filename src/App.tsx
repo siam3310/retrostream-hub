@@ -17,7 +17,10 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminAdd from "./pages/admin/AdminAdd";
+import AdminEdit from "./pages/admin/AdminEdit";
 import AdminLiveMatches from "./pages/admin/AdminLiveMatches";
+import AdminAddMatch from "./pages/admin/AdminAddMatch";
+import AdminEditMatch from "./pages/admin/AdminEditMatch";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,7 +46,10 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/media" element={<AdminMedia />} />
               <Route path="/admin/add" element={<AdminAdd />} />
+              <Route path="/admin/edit/:slug" element={<AdminEdit />} />
               <Route path="/admin/live-matches" element={<AdminLiveMatches />} />
+              <Route path="/admin/live-matches/add" element={<AdminAddMatch />} />
+              <Route path="/admin/live-matches/edit/:id" element={<AdminEditMatch />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

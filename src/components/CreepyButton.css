@@ -54,6 +54,12 @@
   right: 1em;
   bottom: 0.5em;
   height: 0.75em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.creepy-btn:hover .creepy-btn__eyes {
+  opacity: 1;
 }
 
 .creepy-btn__pupil {

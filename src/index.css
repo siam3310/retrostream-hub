@@ -154,6 +154,11 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-mono;
+    font-family: 'Roboto Mono', monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea, label {
+    font-family: 'Roboto Mono', monospace;
   }
 }

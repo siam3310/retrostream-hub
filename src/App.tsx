@@ -17,6 +17,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminAdd from "./pages/admin/AdminAdd";
+import AdminAddManual from "./pages/admin/AdminAddManual";
 import AdminEdit from "./pages/admin/AdminEdit";
 import AdminLiveMatches from "./pages/admin/AdminLiveMatches";
 import AdminAddMatch from "./pages/admin/AdminAddMatch";
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/media" element={<AdminMedia />} />
               <Route path="/admin/add" element={<AdminAdd />} />
+              <Route path="/admin/add/manual" element={<AdminAddManual />} />
               <Route path="/admin/edit/:slug" element={<AdminEdit />} />
               <Route path="/admin/live-matches" element={<AdminLiveMatches />} />
               <Route path="/admin/live-matches/add" element={<AdminAddMatch />} />

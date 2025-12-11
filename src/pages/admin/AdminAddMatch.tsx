@@ -57,7 +57,7 @@ const AdminAddMatch = () => {
       ? new Date(`${form.start_date}T${form.start_time}`).toISOString()
       : null;
 
-    const { error } = await supabase.from('live_matches').insert({
+    const insertData = {
       team1_name: form.team1_name,
       team2_name: form.team2_name,
       team1_logo: form.team1_logo || null,
@@ -65,8 +65,10 @@ const AdminAddMatch = () => {
       tournament: form.tournament || null,
       start_time: startDateTime,
       status: form.status,
-      stream_links: streamLinks.filter(l => l.url) as unknown as null,
-    });
+      stream_links: streamLinks.filter(l => l.url),
+    };
+
+    const { error } = await supabase.from('live_matches').insert(insertData as any);
 
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });

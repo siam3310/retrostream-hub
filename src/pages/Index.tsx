@@ -31,38 +31,61 @@ const Index = () => {
     [loadingMore, hasMore]
   );
 
+  const fetchFeatured = async () => {
+    const { data } = await supabase
+      .from('moviesandseries')
+      .select('*')
+      .eq('featured', true)
+      .order('dateAdded', { ascending: false })
+      .limit(5);
+
+    if (data) {
+      setFeatured(data as unknown as MovieOrSeries[]);
+    }
+  };
+
+  const fetchInitialContent = async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from('moviesandseries')
+      .select('*')
+      .eq('featured', false)
+      .order('dateAdded', { ascending: false })
+      .range(0, ITEMS_PER_PAGE - 1);
+
+    if (data) {
+      setContent(data as unknown as MovieOrSeries[]);
+      setHasMore(data.length === ITEMS_PER_PAGE);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchFeatured = async () => {
-      const { data } = await supabase
-        .from('moviesandseries')
-        .select('*')
-        .eq('featured', true)
-        .order('dateAdded', { ascending: false })
-        .limit(5);
-
-      if (data) {
-        setFeatured(data as unknown as MovieOrSeries[]);
-      }
-    };
-
-    const fetchInitialContent = async () => {
-      setLoading(true);
-      const { data } = await supabase
-        .from('moviesandseries')
-        .select('*')
-        .eq('featured', false)
-        .order('dateAdded', { ascending: false })
-        .range(0, ITEMS_PER_PAGE - 1);
-
-      if (data) {
-        setContent(data as unknown as MovieOrSeries[]);
-        setHasMore(data.length === ITEMS_PER_PAGE);
-      }
-      setLoading(false);
-    };
-
     fetchFeatured();
     fetchInitialContent();
+
+    // Set up realtime subscription for moviesandseries
+    const channel = supabase
+      .channel('moviesandseries-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'moviesandseries',
+        },
+        (payload) => {
+          console.log('Realtime change:', payload);
+          // Refetch data when there's a change
+          fetchFeatured();
+          fetchInitialContent();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -101,14 +124,11 @@ const Index = () => {
         </div>
 
         <section>
-          <h2 className="mb-4 border-b-2 border-foreground pb-2 text-xl font-bold">
-            Browse All
-          </h2>
           <ContentGrid items={content} loading={loading} />
           {hasMore && !loading && (
             <div ref={lastElementRef} className="mt-8 flex justify-center">
               {loadingMore && (
-                <div className="border-2 border-foreground px-4 py-2">Loading more...</div>
+                <div className="border-2 border-foreground px-4 py-2 rounded-md">Loading more...</div>
               )}
             </div>
           )}

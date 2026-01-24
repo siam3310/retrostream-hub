@@ -34,7 +34,21 @@ const AdminMedia = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchMedia(); }, []);
+  useEffect(() => { 
+    fetchMedia(); 
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('admin-media-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'moviesandseries' },
+        () => fetchMedia()
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   // Filter media based on search and type
   const filteredMedia = media.filter(item => {

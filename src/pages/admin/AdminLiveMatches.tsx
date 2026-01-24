@@ -28,7 +28,21 @@ const AdminLiveMatches = () => {
     if (data) setMatches(data as unknown as LiveMatch[]);
   };
 
-  useEffect(() => { fetchMatches(); }, []);
+  useEffect(() => { 
+    fetchMatches(); 
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('admin-live-matches-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'live_matches' },
+        () => fetchMatches()
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const deleteMatch = async (id: number) => {
     if (!confirm('Delete this match?')) return;

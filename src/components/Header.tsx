@@ -159,29 +159,29 @@ export const Header = () => {
         </div>
       </header>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t-2 border-foreground bg-background">
-        <div className="flex items-center justify-around py-2">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.id}
-              to={item.to}
-              className={cn(
-                'flex flex-col items-center gap-1 px-4 py-2 rounded-md transition-colors',
-                location.pathname === item.to
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {item.icon}
-              <span className="text-xs">{item.label}</span>
-            </Link>
-          ))}
+      {/* Mobile Floating Bottom Navigation - Toolbar Dynamic Style */}
+      <nav className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="rounded-xl border-2 border-foreground bg-background">
+          <div className="flex space-x-2 p-2">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.id}
+                to={item.to}
+                aria-label={item.label}
+                className={cn(
+                  'relative flex h-10 w-10 shrink-0 select-none items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95',
+                  location.pathname === item.to ? 'bg-muted text-foreground' : ''
+                )}
+              >
+                {item.icon}
+              </Link>
+            ))}
+          </div>
         </div>
       </nav>
 
       {/* Spacer for mobile bottom nav */}
-      <div className="md:hidden h-16" />
+      <div className="md:hidden h-20" />
     </>
   );
 };

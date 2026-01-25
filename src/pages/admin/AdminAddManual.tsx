@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
@@ -15,18 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-interface VideoSource {
-  name: string;
-  url: string;
-  type: string;
-}
-
-interface DownloadLink {
-  quality: string;
-  size: string;
-  url: string;
-}
+import {
+  VideoSourceManager,
+  DownloadLinkManager,
+  VideoSource,
+  DownloadLink,
+} from '@/components/admin/LinkManager';
 
 const AdminAddManual = () => {
   const navigate = useNavigate();
@@ -72,34 +65,6 @@ const AdminAddManual = () => {
     }
   }, [searchParams]);
 
-  const addVideoSource = () => {
-    setVideoSources([...videoSources, { name: `Server ${videoSources.length + 1}`, url: '', type: 'iframe' }]);
-  };
-
-  const removeVideoSource = (index: number) => {
-    setVideoSources(videoSources.filter((_, i) => i !== index));
-  };
-
-  const updateVideoSource = (index: number, field: keyof VideoSource, value: string) => {
-    const updated = [...videoSources];
-    updated[index][field] = value;
-    setVideoSources(updated);
-  };
-
-  const addDownloadLink = () => {
-    setDownloadLinks([...downloadLinks, { quality: '720P', size: '', url: '' }]);
-  };
-
-  const removeDownloadLink = (index: number) => {
-    setDownloadLinks(downloadLinks.filter((_, i) => i !== index));
-  };
-
-  const updateDownloadLink = (index: number, field: keyof DownloadLink, value: string) => {
-    const updated = [...downloadLinks];
-    updated[index][field] = value;
-    setDownloadLinks(updated);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -137,11 +102,32 @@ const AdminAddManual = () => {
     <AdminLayout title="Add Content Manually" description="Fill out the form to add new content.">
       <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
         {/* Content Details */}
-        <div className="border-2 border-foreground p-6">
-          <h2 className="mb-2 text-xl font-bold">Content Details</h2>
-          <p className="mb-4 text-muted-foreground">All fields are required unless marked as optional.</p>
+        <div className="border-2 border-foreground rounded-lg p-6 space-y-4">
+          <h2 className="text-xl font-bold">Content Details</h2>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block text-sm font-bold">Title *</label>
+              <Input
+                placeholder="e.g., Panchayat Season 3"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                required
+                className="border-2 border-foreground"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-bold">Slug (Optional)</label>
+              <Input
+                placeholder="e.g., panchayat-s3"
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                className="border-2 border-foreground"
+              />
+            </div>
+          </div>
 
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="mb-1 block text-sm font-bold">Poster URL</label>
               <Input
@@ -162,29 +148,7 @@ const AdminAddManual = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="mb-1 block text-sm font-bold">Title</label>
-              <Input
-                placeholder="e.g., Panchayat Season 3"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                required
-                className="border-2 border-foreground"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-bold">Slug (Optional)</label>
-              <Input
-                placeholder="e.g., panchayat-s3"
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                className="border-2 border-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4 mb-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="mb-1 block text-sm font-bold">Category</label>
               <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
@@ -223,7 +187,7 @@ const AdminAddManual = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="mb-1 block text-sm font-bold">Genre (comma separated)</label>
               <Input
@@ -244,7 +208,7 @@ const AdminAddManual = () => {
             </div>
           </div>
 
-          <div className="mb-4">
+          <div>
             <label className="mb-1 block text-sm font-bold">Description</label>
             <Textarea
               placeholder="Enter description..."
@@ -265,97 +229,13 @@ const AdminAddManual = () => {
         </div>
 
         {/* Video Sources */}
-        <div className="border-2 border-foreground p-6">
-          <h2 className="mb-4 text-xl font-bold">Video Sources (Optional)</h2>
-          {videoSources.map((source, index) => (
-            <div key={index} className="mb-4 border-2 border-foreground p-4">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="mb-1 block text-sm font-bold">Name</label>
-                  <Input
-                    value={source.name}
-                    onChange={(e) => updateVideoSource(index, 'name', e.target.value)}
-                    placeholder="Server 1"
-                    className="border-2 border-foreground"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold">URL</label>
-                  <Input
-                    value={source.url}
-                    onChange={(e) => updateVideoSource(index, 'url', e.target.value)}
-                    placeholder="https://example.com/video.mp4"
-                    className="border-2 border-foreground"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold">Type</label>
-                  <Select value={source.type} onValueChange={(v) => updateVideoSource(index, 'type', v)}>
-                    <SelectTrigger className="border-2 border-foreground">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="iframe">Iframe</SelectItem>
-                      <SelectItem value="video">Direct Video</SelectItem>
-                      <SelectItem value="m3u8">M3U8 / HLS</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              {videoSources.length > 1 && (
-                <Button type="button" variant="ghost" size="sm" className="mt-2" onClick={() => removeVideoSource(index)}>
-                  <Trash2 className="mr-2 h-4 w-4" /> Remove Source
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button type="button" variant="outline" onClick={addVideoSource} className="border-2 border-foreground">
-            <Plus className="mr-2 h-4 w-4" /> Add Video Source
-          </Button>
+        <div className="border-2 border-foreground rounded-lg p-6">
+          <VideoSourceManager sources={videoSources} onChange={setVideoSources} />
         </div>
 
         {/* Download Links */}
-        <div className="border-2 border-foreground p-6">
-          <h2 className="mb-4 text-xl font-bold">Download Links (Optional)</h2>
-          {downloadLinks.map((link, index) => (
-            <div key={index} className="mb-4 border-2 border-foreground p-4">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="mb-1 block text-sm font-bold">Quality</label>
-                  <Input
-                    value={link.quality}
-                    onChange={(e) => updateDownloadLink(index, 'quality', e.target.value)}
-                    placeholder="720P"
-                    className="border-2 border-foreground"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold">Size</label>
-                  <Input
-                    value={link.size}
-                    onChange={(e) => updateDownloadLink(index, 'size', e.target.value)}
-                    placeholder="1.2 GB"
-                    className="border-2 border-foreground"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-bold">URL</label>
-                  <Input
-                    value={link.url}
-                    onChange={(e) => updateDownloadLink(index, 'url', e.target.value)}
-                    placeholder="https://..."
-                    className="border-2 border-foreground"
-                  />
-                </div>
-              </div>
-              <Button type="button" variant="ghost" size="sm" className="mt-2" onClick={() => removeDownloadLink(index)}>
-                <Trash2 className="mr-2 h-4 w-4" /> Remove Link
-              </Button>
-            </div>
-          ))}
-          <Button type="button" variant="outline" onClick={addDownloadLink} className="border-2 border-foreground">
-            <Plus className="mr-2 h-4 w-4" /> Add Download Link
-          </Button>
+        <div className="border-2 border-foreground rounded-lg p-6">
+          <DownloadLinkManager links={downloadLinks} onChange={setDownloadLinks} />
         </div>
 
         <div className="flex justify-end">

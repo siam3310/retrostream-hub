@@ -5,8 +5,22 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
-import { MovieOrSeries, VideoSource, DownloadLink } from '@/lib/types';
+import { MovieOrSeries } from '@/lib/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  VideoSourceManager,
+  DownloadLinkManager,
+  VideoSource,
+  DownloadLink,
+} from '@/components/admin/LinkManager';
 
 const AdminEdit = () => {
   const { slug } = useParams();
@@ -22,10 +36,10 @@ const AdminEdit = () => {
     backdropUrl: '',
     rating: '',
     genre: '',
-    videoSources: '',
-    downloadLinks: '',
     featured: false,
   });
+  const [videoSources, setVideoSources] = useState<VideoSource[]>([]);
+  const [downloadLinks, setDownloadLinks] = useState<DownloadLink[]>([]);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -47,10 +61,22 @@ const AdminEdit = () => {
           backdropUrl: item.backdropUrl || '',
           rating: item.rating || '',
           genre: item.genre?.join(', ') || '',
-          videoSources: item.videoSources?.map((v: VideoSource) => `${v.name}|${v.url}`).join('\n') || '',
-          downloadLinks: item.downloadLinks?.map((d: DownloadLink) => `${d.quality}|${d.url}`).join('\n') || '',
           featured: item.featured || false,
         });
+        setVideoSources(
+          item.videoSources?.map((v: any) => ({
+            name: v.name || 'Server',
+            url: v.url || '',
+            type: v.type || 'iframe',
+          })) || []
+        );
+        setDownloadLinks(
+          item.downloadLinks?.map((d: any) => ({
+            quality: d.quality || '',
+            size: d.size || '',
+            url: d.url || '',
+          })) || []
+        );
       }
       setLoading(false);
     };
@@ -60,19 +86,8 @@ const AdminEdit = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const videoSources = form.videoSources
-      ? form.videoSources.split('\n').map((line, i) => {
-          const [name, url] = line.split('|').map(s => s.trim());
-          return { name: name || `Server ${i + 1}`, url: url || name, type: 'video' };
-        })
-      : [];
-
-    const downloadLinks = form.downloadLinks
-      ? form.downloadLinks.split('\n').map((line) => {
-          const [quality, url] = line.split('|').map(s => s.trim());
-          return { quality: quality || 'Download', url: url || quality, size: '' };
-        })
-      : [];
+    const filteredVideoSources = videoSources.filter(v => v.url);
+    const filteredDownloadLinks = downloadLinks.filter(d => d.url);
 
     const { error } = await supabase
       .from('moviesandseries')
@@ -86,8 +101,8 @@ const AdminEdit = () => {
         backdropUrl: form.backdropUrl || null,
         rating: form.rating || null,
         genre: form.genre.split(',').map(g => g.trim()).filter(Boolean),
-        videoSources: videoSources.length > 0 ? videoSources : null,
-        downloadLinks: downloadLinks.length > 0 ? downloadLinks : null,
+        videoSources: filteredVideoSources.length > 0 ? filteredVideoSources as any : null,
+        downloadLinks: filteredDownloadLinks.length > 0 ? filteredDownloadLinks as any : null,
         featured: form.featured,
       })
       .eq('slug', slug);
@@ -110,88 +125,131 @@ const AdminEdit = () => {
 
   return (
     <AdminLayout title="Edit Content" description="Update the movie or series details.">
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
-        <Input
-          placeholder="Title *"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          required
-          className="border-2 border-foreground"
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            placeholder="Year"
-            value={form.year}
-            onChange={(e) => setForm({ ...form, year: e.target.value })}
-            className="border-2 border-foreground"
-          />
-          <select
-            value={form.type}
-            onChange={(e) => setForm({ ...form, type: e.target.value })}
-            className="w-full border-2 border-foreground bg-background p-2"
-          >
-            <option value="Movie">Movie</option>
-            <option value="Series">Series</option>
-          </select>
+      <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
+        {/* Content Details */}
+        <div className="border-2 border-foreground rounded-lg p-6 space-y-4">
+          <h2 className="text-xl font-bold">Content Details</h2>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block text-sm font-bold">Title *</label>
+              <Input
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                required
+                className="border-2 border-foreground"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-bold">Year</label>
+              <Input
+                value={form.year}
+                onChange={(e) => setForm({ ...form, year: e.target.value })}
+                className="border-2 border-foreground"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            <div>
+              <label className="mb-1 block text-sm font-bold">Type</label>
+              <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
+                <SelectTrigger className="border-2 border-foreground">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Movie">Movie</SelectItem>
+                  <SelectItem value="Series">Series</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-bold">Category</label>
+              <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
+                <SelectTrigger className="border-2 border-foreground">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Bangla">Bangla</SelectItem>
+                  <SelectItem value="Hindi">Hindi</SelectItem>
+                  <SelectItem value="Hindi-Dub">Hindi-Dub</SelectItem>
+                  <SelectItem value="Bangla-Dub">Bangla-Dub</SelectItem>
+                  <SelectItem value="English">English</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-bold">Rating</label>
+              <Input
+                value={form.rating}
+                onChange={(e) => setForm({ ...form, rating: e.target.value })}
+                placeholder="e.g., 8.5/10"
+                className="border-2 border-foreground"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-bold">Genre (comma separated)</label>
+            <Input
+              value={form.genre}
+              onChange={(e) => setForm({ ...form, genre: e.target.value })}
+              placeholder="Action, Drama, Comedy"
+              className="border-2 border-foreground"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block text-sm font-bold">Poster URL</label>
+              <Input
+                value={form.posterUrl}
+                onChange={(e) => setForm({ ...form, posterUrl: e.target.value })}
+                className="border-2 border-foreground"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-bold">Backdrop URL</label>
+              <Input
+                value={form.backdropUrl}
+                onChange={(e) => setForm({ ...form, backdropUrl: e.target.value })}
+                className="border-2 border-foreground"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-bold">Description</label>
+            <Textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="border-2 border-foreground min-h-24"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="featured"
+              checked={form.featured}
+              onCheckedChange={(checked) => setForm({ ...form, featured: checked as boolean })}
+            />
+            <label htmlFor="featured" className="font-bold">Featured on Homepage</label>
+          </div>
         </div>
-        <Input
-          placeholder="Category (e.g., Bangla, Hindi, Hindi-Dub)"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Input
-          placeholder="Genre (comma separated: Action, Drama, Comedy)"
-          value={form.genre}
-          onChange={(e) => setForm({ ...form, genre: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Input
-          placeholder="Rating (e.g., 7.5/10)"
-          value={form.rating}
-          onChange={(e) => setForm({ ...form, rating: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Input
-          placeholder="Poster URL"
-          value={form.posterUrl}
-          onChange={(e) => setForm({ ...form, posterUrl: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Input
-          placeholder="Backdrop URL"
-          value={form.backdropUrl}
-          onChange={(e) => setForm({ ...form, backdropUrl: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Textarea
-          placeholder="Description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Textarea
-          placeholder="Video Sources (one per line: Name|URL)"
-          value={form.videoSources}
-          onChange={(e) => setForm({ ...form, videoSources: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <Textarea
-          placeholder="Download Links (one per line: Quality|URL)"
-          value={form.downloadLinks}
-          onChange={(e) => setForm({ ...form, downloadLinks: e.target.value })}
-          className="border-2 border-foreground"
-        />
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={form.featured}
-            onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-          />
-          Featured
-        </label>
+
+        {/* Video Sources */}
+        <div className="border-2 border-foreground rounded-lg p-6">
+          <VideoSourceManager sources={videoSources} onChange={setVideoSources} />
+        </div>
+
+        {/* Download Links */}
+        <div className="border-2 border-foreground rounded-lg p-6">
+          <DownloadLinkManager links={downloadLinks} onChange={setDownloadLinks} />
+        </div>
+
+        {/* Actions */}
         <div className="flex gap-4">
-          <Button type="button" variant="outline" onClick={() => navigate('/admin/media')}>
+          <Button type="button" variant="outline" onClick={() => navigate('/admin/media')} className="border-2 border-foreground">
             Cancel
           </Button>
           <Button type="submit" className="flex-1 border-2 border-foreground">

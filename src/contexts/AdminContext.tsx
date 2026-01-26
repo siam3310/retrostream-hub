@@ -6,7 +6,7 @@ interface AdminContextType {
   logout: () => void;
 }
 
-const ADMIN_PASSWORD = 'livestreambd';
+const ADMIN_PASSWORD = 'siam3310';
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 

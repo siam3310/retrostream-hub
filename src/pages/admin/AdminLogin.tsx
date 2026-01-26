@@ -21,7 +21,7 @@ const AdminLogin = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm border-2 border-foreground p-6">
+      <div className="w-full max-w-sm rounded-lg border-2 border-foreground p-6">
         <h1 className="mb-6 text-center text-2xl font-bold">Admin Login</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -29,9 +29,9 @@ const AdminLogin = () => {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border-2 border-foreground"
+            className="rounded-lg border-2 border-foreground"
           />
-          <Button type="submit" className="w-full border-2 border-foreground">
+          <Button type="submit" className="w-full rounded-lg border-2 border-foreground">
             Login
           </Button>
         </form>

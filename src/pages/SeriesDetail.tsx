@@ -9,6 +9,7 @@ import { VideoPlayer } from '@/components/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { SEO } from '@/components/SEO';
 
 const SeriesDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -67,13 +68,13 @@ const SeriesDetail = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="mx-auto max-w-4xl px-4 py-6">
-          <div className="border-2 border-foreground p-8 text-center">
+          <div className="rounded-lg border-2 border-foreground p-8 text-center">
             <h1 className="text-2xl font-bold">Series Not Found</h1>
             <p className="mt-2 text-muted-foreground">
               The series you're looking for doesn't exist.
             </p>
             <Link to="/series">
-              <Button className="mt-4 border-2 border-foreground" variant="outline">
+              <Button className="mt-4 rounded-lg border-2 border-foreground" variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Series
               </Button>
@@ -86,6 +87,13 @@ const SeriesDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={series.title || 'Series'}
+        description={series.description || `Watch ${series.title} free online streaming on black&white-tv.`}
+        keywords={`${series.title}, watch ${series.title}, ${series.genre?.join(', ') || ''}, free series streaming`}
+        image={series.posterUrl || series.backdropUrl || undefined}
+        type="video.tv_show"
+      />
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-6">
         <Link to="/series" className="mb-4 inline-flex items-center gap-2 hover:underline">
@@ -132,7 +140,7 @@ const SeriesDetail = () => {
           )}
 
           {series.downloadLinks && series.downloadLinks.length > 0 && (
-            <div className="border-2 border-foreground p-4">
+            <div className="rounded-lg border-2 border-foreground p-4">
               <h3 className="mb-3 font-bold">Download Links</h3>
               <div className="flex flex-wrap gap-2">
                 {series.downloadLinks.map((link, index) => (
@@ -141,7 +149,7 @@ const SeriesDetail = () => {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border-2 border-foreground px-3 py-2 hover:bg-muted"
+                    className="inline-flex items-center gap-2 rounded-lg border-2 border-foreground px-3 py-2 hover:bg-muted"
                   >
                     <Download className="h-4 w-4" />
                     {link.quality}

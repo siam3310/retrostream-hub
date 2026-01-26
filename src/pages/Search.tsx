@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { MovieOrSeries } from '@/lib/types';
 import { Header } from '@/components/Header';
 import { ContentGrid } from '@/components/ContentGrid';
+import { SEO } from '@/components/SEO';
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -38,6 +39,11 @@ const Search = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={`Search: ${query}`}
+        description={`Search results for "${query}" on black&white-tv. Find movies and series.`}
+        keywords={`search, ${query}, movies, series`}
+      />
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-6">
         <Link to="/" className="mb-4 inline-flex items-center gap-2 hover:underline">
@@ -50,7 +56,7 @@ const Search = () => {
         </h1>
 
         {!query.trim() ? (
-          <div className="border-2 border-foreground p-8 text-center">
+          <div className="rounded-lg border-2 border-foreground p-8 text-center">
             <p className="text-muted-foreground">Enter a search term to find content</p>
           </div>
         ) : (

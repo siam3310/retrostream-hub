@@ -71,8 +71,8 @@ const AdminLiveMatches = () => {
         </Link>
       </div>
 
-      <div className="border-2 border-foreground">
-        <div className="border-b-2 border-foreground bg-muted p-4">
+      <div className="rounded-lg border-2 border-foreground">
+        <div className="border-b-2 border-foreground bg-muted p-4 rounded-t-lg">
           <h2 className="font-bold">Current & Upcoming Matches</h2>
           <p className="text-sm text-muted-foreground">This is the list of all matches that will be shown on the live sports page.</p>
         </div>

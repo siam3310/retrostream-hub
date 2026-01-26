@@ -9,6 +9,7 @@ import { VideoPlayer } from '@/components/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { SEO } from '@/components/SEO';
 
 const MovieDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -67,13 +68,13 @@ const MovieDetail = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="mx-auto max-w-4xl px-4 py-6">
-          <div className="border-2 border-foreground p-8 text-center">
+          <div className="rounded-lg border-2 border-foreground p-8 text-center">
             <h1 className="text-2xl font-bold">Movie Not Found</h1>
             <p className="mt-2 text-muted-foreground">
               The movie you're looking for doesn't exist.
             </p>
             <Link to="/movies">
-              <Button className="mt-4 border-2 border-foreground" variant="outline">
+              <Button className="mt-4 rounded-lg border-2 border-foreground" variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Movies
               </Button>
@@ -86,6 +87,13 @@ const MovieDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={movie.title || 'Movie'}
+        description={movie.description || `Watch ${movie.title} free online streaming on black&white-tv.`}
+        keywords={`${movie.title}, watch ${movie.title}, ${movie.genre?.join(', ') || ''}, free movie streaming`}
+        image={movie.posterUrl || movie.backdropUrl || undefined}
+        type="video.movie"
+      />
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-6">
         <Link to="/movies" className="mb-4 inline-flex items-center gap-2 hover:underline">
@@ -132,7 +140,7 @@ const MovieDetail = () => {
           )}
 
           {movie.downloadLinks && movie.downloadLinks.length > 0 && (
-            <div className="border-2 border-foreground p-4">
+            <div className="rounded-lg border-2 border-foreground p-4">
               <h3 className="mb-3 font-bold">Download Links</h3>
               <div className="flex flex-wrap gap-2">
                 {movie.downloadLinks.map((link, index) => (
@@ -141,7 +149,7 @@ const MovieDetail = () => {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border-2 border-foreground px-3 py-2 hover:bg-muted"
+                    className="inline-flex items-center gap-2 rounded-lg border-2 border-foreground px-3 py-2 hover:bg-muted"
                   >
                     <Download className="h-4 w-4" />
                     {link.quality}

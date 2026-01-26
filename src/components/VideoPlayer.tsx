@@ -12,7 +12,7 @@ export const VideoPlayer = ({ sources, poster }: VideoPlayerProps) => {
 
   if (!sources || sources.length === 0) {
     return (
-      <div className="aspect-video border-2 border-foreground bg-muted">
+      <div className="aspect-video rounded-lg border-2 border-foreground bg-muted">
         <div className="flex h-full w-full items-center justify-center">
           <p className="text-muted-foreground">No video source available</p>
         </div>
@@ -24,7 +24,7 @@ export const VideoPlayer = ({ sources, poster }: VideoPlayerProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video border-2 border-foreground bg-muted">
+      <div className="aspect-video rounded-lg border-2 border-foreground bg-muted overflow-hidden">
         {currentSource?.url ? (
           <iframe
             src={currentSource.url}
@@ -46,7 +46,7 @@ export const VideoPlayer = ({ sources, poster }: VideoPlayerProps) => {
               key={index}
               variant={index === selectedSource ? 'default' : 'outline'}
               size="sm"
-              className="border-2 border-foreground"
+              className="rounded-lg border-2 border-foreground"
               onClick={() => setSelectedSource(index)}
             >
               {source.name || `Source ${index + 1}`}

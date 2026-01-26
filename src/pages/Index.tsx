@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { HeroCarousel } from '@/components/HeroCarousel';
 import { ContentGrid } from '@/components/ContentGrid';
 import { CreepyButton } from '@/components/CreepyButton';
+import { SEO } from '@/components/SEO';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -115,6 +116,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO />
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-6">
         <HeroCarousel items={featured} />

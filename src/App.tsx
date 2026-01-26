@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { WatchLaterProvider } from "@/contexts/WatchLaterContext";
 import { AdminProvider } from "@/contexts/AdminContext";
 import Index from "./pages/Index";
@@ -27,38 +28,40 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <WatchLaterProvider>
-        <AdminProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/movies" element={<Movies />} />
-              <Route path="/series" element={<Series />} />
-              <Route path="/movies/:slug" element={<MovieDetail />} />
-              <Route path="/series/:slug" element={<SeriesDetail />} />
-              <Route path="/live-sports" element={<LiveSports />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/watch-later" element={<WatchLater />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/media" element={<AdminMedia />} />
-              <Route path="/admin/add" element={<AdminAdd />} />
-              <Route path="/admin/add/manual" element={<AdminAddManual />} />
-              <Route path="/admin/edit/:slug" element={<AdminEdit />} />
-              <Route path="/admin/live-matches" element={<AdminLiveMatches />} />
-              <Route path="/admin/live-matches/add" element={<AdminAddMatch />} />
-              <Route path="/admin/live-matches/edit/:id" element={<AdminEditMatch />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </AdminProvider>
-      </WatchLaterProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <WatchLaterProvider>
+          <AdminProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/movies" element={<Movies />} />
+                <Route path="/series" element={<Series />} />
+                <Route path="/movies/:slug" element={<MovieDetail />} />
+                <Route path="/series/:slug" element={<SeriesDetail />} />
+                <Route path="/live-sports" element={<LiveSports />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/watch-later" element={<WatchLater />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/media" element={<AdminMedia />} />
+                <Route path="/admin/add" element={<AdminAdd />} />
+                <Route path="/admin/add/manual" element={<AdminAddManual />} />
+                <Route path="/admin/edit/:slug" element={<AdminEdit />} />
+                <Route path="/admin/live-matches" element={<AdminLiveMatches />} />
+                <Route path="/admin/live-matches/add" element={<AdminAddMatch />} />
+                <Route path="/admin/live-matches/edit/:id" element={<AdminEditMatch />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </AdminProvider>
+        </WatchLaterProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;

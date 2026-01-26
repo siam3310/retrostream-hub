@@ -89,7 +89,7 @@ const AdminAdd = () => {
     <AdminLayout title="Add Content" description="Import from TMDB or add manually.">
       <div className="max-w-4xl space-y-8">
         {/* Option 1: Import from TMDB */}
-        <div className="border-2 border-foreground p-6">
+        <div className="rounded-lg border-2 border-foreground p-6">
           <h2 className="mb-2 text-xl font-bold">Option 1: Import from TMDB</h2>
           <p className="mb-4 text-muted-foreground">
             This is the recommended method. Search for a movie or series on The Movie Database (TMDB) to pre-fill most of the fields automatically.
@@ -122,7 +122,7 @@ const AdminAdd = () => {
           </div>
 
           {searchResults.length > 0 && (
-            <div className="mb-4 max-h-64 overflow-y-auto border-2 border-foreground">
+            <div className="mb-4 max-h-64 overflow-y-auto rounded-lg border-2 border-foreground">
               {searchResults.map((result) => (
                 <div
                   key={result.id}
@@ -175,13 +175,13 @@ const AdminAdd = () => {
         </div>
 
         {/* Option 2: Add Manually */}
-        <div className="border-2 border-foreground p-6">
+        <div className="rounded-lg border-2 border-foreground p-6">
           <h2 className="mb-2 text-xl font-bold">Option 2: Add Manually</h2>
           <p className="mb-4 text-muted-foreground">
             If you can't find the content on TMDB or want to enter all the details yourself, use the manual entry form.
           </p>
           <Link to="/admin/add/manual">
-            <Button variant="outline" className="border-2 border-foreground">
+            <Button variant="outline" className="rounded-lg border-2 border-foreground">
               Go to Manual Entry Form
             </Button>
           </Link>

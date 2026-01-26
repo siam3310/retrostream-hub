@@ -42,7 +42,7 @@ export const HeroCarousel = ({ items }: HeroCarouselProps) => {
   const path = item.type === 'Series' ? `/series/${item.slug}` : `/movies/${item.slug}`;
 
   return (
-    <div className="relative border-2 border-foreground overflow-hidden">
+    <div className="relative rounded-lg border-2 border-foreground overflow-hidden">
       <div className="aspect-video bg-muted md:aspect-[21/9] relative">
         {items.map((slideItem, index) => (
           <div
@@ -96,9 +96,6 @@ export const HeroCarousel = ({ items }: HeroCarouselProps) => {
           )}
         </div>
         <h2 className="mt-2 text-2xl font-bold md:text-4xl">{item.title || 'Untitled'}</h2>
-        <p className="mt-2 line-clamp-2 max-w-xl text-sm text-muted-foreground md:text-base">
-          {item.description}
-        </p>
         <Link to={path}>
           <Button className="mt-4 border-2 border-foreground" variant="default">
             <Play className="mr-2 h-4 w-4" />

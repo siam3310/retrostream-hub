@@ -26,13 +26,13 @@ export const ContentCard = ({ item }: ContentCardProps) => {
 
   return (
     <Link to={path} className="group block">
-      <div className="overflow-hidden border-2 border-foreground transition-all hover:shadow-md">
+      <div className="overflow-hidden rounded-lg border-2 border-foreground">
         <div className="relative aspect-[2/3] bg-muted">
           {item.posterUrl ? (
             <img
               src={item.posterUrl}
               alt={item.title || 'Content poster'}
-              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              className="h-full w-full object-cover"
               loading="lazy"
             />
           ) : (
@@ -42,7 +42,7 @@ export const ContentCard = ({ item }: ContentCardProps) => {
           )}
           {item.category && (
             <Badge 
-              className={`absolute right-2 top-2 ${getCategoryColor(item.category)}`}
+              className={`absolute right-2 top-2 rounded-md ${getCategoryColor(item.category)}`}
             >
               {item.category}
             </Badge>

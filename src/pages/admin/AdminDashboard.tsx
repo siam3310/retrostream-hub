@@ -48,35 +48,35 @@ const AdminDashboard = () => {
     <AdminLayout title="Dashboard" description="Overview of your content and quick actions.">
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        <div className="border-2 border-foreground p-4">
+        <div className="rounded-lg border-2 border-foreground p-4">
           <div className="flex items-center gap-2 mb-2">
             <Film className="h-4 w-4 text-muted-foreground" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">Movies</span>
           </div>
           <p className="text-2xl font-bold">{stats.totalMovies}</p>
         </div>
-        <div className="border-2 border-foreground p-4">
+        <div className="rounded-lg border-2 border-foreground p-4">
           <div className="flex items-center gap-2 mb-2">
             <Tv className="h-4 w-4 text-muted-foreground" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">Series</span>
           </div>
           <p className="text-2xl font-bold">{stats.totalSeries}</p>
         </div>
-        <div className="border-2 border-foreground p-4">
+        <div className="rounded-lg border-2 border-foreground p-4">
           <div className="flex items-center gap-2 mb-2">
             <Radio className="h-4 w-4 text-destructive" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">Live Now</span>
           </div>
           <p className="text-2xl font-bold">{stats.liveMatches}</p>
         </div>
-        <div className="border-2 border-foreground p-4">
+        <div className="rounded-lg border-2 border-foreground p-4">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">Upcoming</span>
           </div>
           <p className="text-2xl font-bold">{stats.upcomingMatches}</p>
         </div>
-        <div className="border-2 border-foreground p-4">
+        <div className="rounded-lg border-2 border-foreground p-4">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">Featured</span>
@@ -88,19 +88,19 @@ const AdminDashboard = () => {
       {/* Quick Actions */}
       <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
       <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Link to="/admin/add" className="border-2 border-foreground p-6 hover:bg-muted transition-colors group">
+        <Link to="/admin/add" className="rounded-lg border-2 border-foreground p-6 hover:bg-muted transition-colors group">
           <Plus className="mb-3 h-6 w-6 group-hover:scale-110 transition-transform" />
           <h3 className="font-bold mb-1">Add New Content</h3>
           <p className="text-sm text-muted-foreground">Import from TMDB or add manually</p>
         </Link>
 
-        <Link to="/admin/media" className="border-2 border-foreground p-6 hover:bg-muted transition-colors group">
+        <Link to="/admin/media" className="rounded-lg border-2 border-foreground p-6 hover:bg-muted transition-colors group">
           <Film className="mb-3 h-6 w-6 group-hover:scale-110 transition-transform" />
           <h3 className="font-bold mb-1">Manage Media</h3>
           <p className="text-sm text-muted-foreground">Edit, delete, or feature content</p>
         </Link>
 
-        <Link to="/admin/live-matches/add" className="border-2 border-foreground p-6 hover:bg-muted transition-colors group">
+        <Link to="/admin/live-matches/add" className="rounded-lg border-2 border-foreground p-6 hover:bg-muted transition-colors group">
           <Radio className="mb-3 h-6 w-6 group-hover:scale-110 transition-transform" />
           <h3 className="font-bold mb-1">Add Live Match</h3>
           <p className="text-sm text-muted-foreground">Create a new live sports stream</p>
@@ -110,7 +110,7 @@ const AdminDashboard = () => {
       {/* Management Links */}
       <h2 className="text-lg font-bold mb-4">Management</h2>
       <div className="grid gap-3 md:grid-cols-2">
-        <Link to="/admin/media" className="flex items-center justify-between border-2 border-foreground p-4 hover:bg-muted transition-colors">
+        <Link to="/admin/media" className="flex items-center justify-between rounded-lg border-2 border-foreground p-4 hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
             <Film className="h-5 w-5" />
             <div>
@@ -121,7 +121,7 @@ const AdminDashboard = () => {
           <Eye className="h-4 w-4 text-muted-foreground" />
         </Link>
 
-        <Link to="/admin/live-matches" className="flex items-center justify-between border-2 border-foreground p-4 hover:bg-muted transition-colors">
+        <Link to="/admin/live-matches" className="flex items-center justify-between rounded-lg border-2 border-foreground p-4 hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
             <Radio className="h-5 w-5" />
             <div>
